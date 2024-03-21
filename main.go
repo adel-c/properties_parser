@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 import (
 	"bufio"
 	"os"
@@ -10,7 +13,34 @@ import (
 type PropertyFile interface {
 	sortKeys() PropertyFile
 	duplicatedKeys(p PropertyFile) PropertyFile
+	print()
 }
+
+func (f PropFile) sortKeys() PropertyFile {
+
+	props := make([]PropLine, len(f.lines))
+	copy(props, f.lines)
+
+	sort.Slice(props, keyComparator(props))
+	return PropFile{lines: props}
+}
+func (f PropFile) duplicatedKeys(p PropertyFile) PropertyFile {
+
+	props := make([]PropLine, 0)
+	copy(props, f.lines)
+	sort.Slice(props, keyComparator(props))
+	return PropFile{lines: props}
+}
+func (f PropFile) print() {
+	fmt.Println("###########################")
+	fmt.Println("Properties:  ")
+	fmt.Println("###########################")
+	for index, value := range f.lines {
+		fmt.Printf("%d %s = %s\n", index, value.key, value.value)
+	}
+	fmt.Println("###########################")
+}
+
 type PropFile struct {
 	lines []PropLine
 }
@@ -54,23 +84,17 @@ func readPropertiesFile(filePath string) PropFile {
 }
 func keyComparator(array []PropLine) func(i, j int) bool {
 	return func(i, j int) bool {
-		return array[i].key > array[j].key
+		return array[i].key < array[j].key
 	}
 }
 
 func main() {
-	fmt.Println("Hello, World!")
 	filePath := "first.properties"
 	firstFile := readPropertiesFile(filePath)
-	filePath2 := "sec.properties"
-	secondFile := readPropertiesFile(filePath2)
+	//filePath2 := "sec.properties"
+	//secondFile := readPropertiesFile(filePath2)
 	// Print the read firstFile
-	fmt.Println("Properties:")
-	for index, value := range firstFile.lines {
-		fmt.Printf("%d %s = %s\n", index, value.key, value.value)
-	}
-
-	for index, value := range secondFile.lines {
-		fmt.Printf("%d %s = %s\n", index, value.key, value.value)
-	}
+	firstFile.print()
+	firstFile.sortKeys().print()
+	//secondFile.print()
 }
