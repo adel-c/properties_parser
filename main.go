@@ -7,14 +7,27 @@ import (
 	"strings"
 )
 
-func readPropertiesFile(filePath string) (map[string]string, error) {
+type PropertyFile interface {
+	sortKeys() PropertyFile
+	duplicatedKeys(p PropertyFile) PropertyFile
+}
+type PropFile struct {
+	lines []PropLine
+}
+type PropLine struct {
+	key   string
+	value string
+}
+
+func readPropertiesFile(filePath string) []PropLine {
 	file, err := os.Open(filePath)
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 	defer file.Close()
 
 	properties := make(map[string]string)
+	props := make([]PropLine, 1)
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
@@ -28,23 +41,21 @@ func readPropertiesFile(filePath string) (map[string]string, error) {
 			key := strings.TrimSpace(parts[0])
 			value := strings.TrimSpace(parts[1])
 			properties[key] = value
+			l := PropLine{key: key, value: value}
+			props = append(props, l)
 		}
 	}
 
 	if err := scanner.Err(); err != nil {
-		return nil, err
+		panic(err)
 	}
 
-	return properties, nil
+	return properties
 }
 func main() {
 	fmt.Println("Hello, World!")
 	filePath := "first.properties"
-	properties, err := readPropertiesFile(filePath)
-	if err != nil {
-		fmt.Println("Error reading properties file:", err)
-		return
-	}
+	properties := readPropertiesFile(filePath)
 
 	// Print the read properties
 	fmt.Println("Properties:")
