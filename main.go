@@ -27,7 +27,7 @@ func readPropertiesFile(filePath string) []PropLine {
 	defer file.Close()
 
 	properties := make(map[string]string)
-	props := make([]PropLine, 1)
+	props := make([]PropLine, 0)
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
@@ -50,7 +50,7 @@ func readPropertiesFile(filePath string) []PropLine {
 		panic(err)
 	}
 
-	return properties
+	return props
 }
 func main() {
 	fmt.Println("Hello, World!")
@@ -59,7 +59,8 @@ func main() {
 
 	// Print the read properties
 	fmt.Println("Properties:")
-	for key, value := range properties {
-		fmt.Printf("%s = %s\n", key, value)
+	for index, value := range properties {
+
+		fmt.Printf("%d %s = %s\n", index, value.key, value.value)
 	}
 }
