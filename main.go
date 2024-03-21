@@ -19,7 +19,7 @@ type PropLine struct {
 	value string
 }
 
-func readPropertiesFile(filePath string) []PropLine {
+func readPropertiesFile(filePath string) PropFile {
 	file, err := os.Open(filePath)
 	if err != nil {
 		panic(err)
@@ -50,16 +50,16 @@ func readPropertiesFile(filePath string) []PropLine {
 		panic(err)
 	}
 
-	return props
+	return PropFile{lines: props}
 }
 func main() {
 	fmt.Println("Hello, World!")
-	filePath := "first.properties"
-	properties := readPropertiesFile(filePath)
+	filePath := "first.firstFile"
+	firstFile := readPropertiesFile(filePath)
 
-	// Print the read properties
+	// Print the read firstFile
 	fmt.Println("Properties:")
-	for index, value := range properties {
+	for index, value := range firstFile.lines {
 
 		fmt.Printf("%d %s = %s\n", index, value.key, value.value)
 	}
