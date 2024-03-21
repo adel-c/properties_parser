@@ -52,15 +52,25 @@ func readPropertiesFile(filePath string) PropFile {
 
 	return PropFile{lines: props}
 }
+func keyComparator(array []PropLine) func(i, j int) bool {
+	return func(i, j int) bool {
+		return array[i].key > array[j].key
+	}
+}
+
 func main() {
 	fmt.Println("Hello, World!")
-	filePath := "first.firstFile"
+	filePath := "first.properties"
 	firstFile := readPropertiesFile(filePath)
-
+	filePath2 := "sec.properties"
+	secondFile := readPropertiesFile(filePath2)
 	// Print the read firstFile
 	fmt.Println("Properties:")
 	for index, value := range firstFile.lines {
+		fmt.Printf("%d %s = %s\n", index, value.key, value.value)
+	}
 
+	for index, value := range secondFile.lines {
 		fmt.Printf("%d %s = %s\n", index, value.key, value.value)
 	}
 }
