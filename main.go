@@ -45,7 +45,7 @@ func (f PropFile) duplicatedKeys(p PropertyFile) PropertyFile {
 }
 func (l PropLine) levelKey(groupLevel int) string {
 	values := strings.Split(l.key, ".")
-	values = values[0:groupLevel]
+	values = values[0:min(groupLevel, len(values))]
 
 	return strings.Join(values, ".")
 }
