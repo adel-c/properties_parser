@@ -14,8 +14,12 @@ type PropertyFile interface {
 	sortKeys() PropertyFile
 	duplicatedKeys(p PropertyFile) PropertyFile
 	print()
+	properties() []PropLine
 }
 
+func (f PropFile) properties() []PropLine {
+	return f.lines
+}
 func (f PropFile) sortKeys() PropertyFile {
 
 	props := make([]PropLine, len(f.lines))
@@ -25,7 +29,15 @@ func (f PropFile) sortKeys() PropertyFile {
 	return PropFile{lines: props}
 }
 func (f PropFile) duplicatedKeys(p PropertyFile) PropertyFile {
+	v := make(map[string]string)
+	for _, value := range f.lines {
+		v[value.key] = value.value
+	}
+	for _, sv := range p.sortKeys().properties() {
+		if v[sv.key] == sv.value {
 
+		}
+	}
 	props := make([]PropLine, 0)
 	copy(props, f.lines)
 	sort.Slice(props, keyComparator(props))
