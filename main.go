@@ -13,7 +13,7 @@ import (
 type PropertyFile interface {
 	sortKeys() PropertyFile
 	duplicatedKeys(p PropertyFile) PropertyFile
-	print()
+	print() string
 	properties() []PropLine
 }
 
@@ -43,14 +43,16 @@ func (f PropFile) duplicatedKeys(p PropertyFile) PropertyFile {
 	sort.Slice(props, keyComparator(props))
 	return PropFile{lines: props}
 }
-func (f PropFile) print() {
-	fmt.Println("###########################")
-	fmt.Println("Properties:  ")
-	fmt.Println("###########################")
+func (f PropFile) print() string {
+	result := ""
+	result += fmt.Sprintf("###########################\n")
+	result += fmt.Sprintf("Properties:  \n")
+	result += fmt.Sprintf("###########################\n")
 	for index, value := range f.lines {
-		fmt.Printf("%d %s = %s\n", index, value.key, value.value)
+		result += fmt.Sprintf("%d %s = %s\n", index, value.key, value.value)
 	}
-	fmt.Println("###########################")
+	result += fmt.Sprintf("###########################\n")
+	return result
 }
 
 type PropFile struct {
@@ -106,7 +108,8 @@ func main() {
 	//filePath2 := "sec.properties"
 	//secondFile := readPropertiesFile(filePath2)
 	// Print the read firstFile
-	firstFile.print()
-	firstFile.sortKeys().print()
+	print(firstFile.print())
+
+	print(firstFile.sortKeys().print())
 	//secondFile.print()
 }
