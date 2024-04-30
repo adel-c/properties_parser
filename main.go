@@ -66,7 +66,6 @@ func (f PropFile) print(groupLevel int) string {
 			result += "\n"
 			currentGroup = key
 		}
-		println(key)
 		result += fmt.Sprintf("%s = %s\n", value.key, value.value)
 	}
 	result += fmt.Sprintf("###########################\n")
