@@ -13,7 +13,7 @@ import (
 type PropertyFile interface {
 	sortKeys() PropertyFile
 	duplicatedKeys(p PropertyFile) PropertyFile
-	print() string
+	print(groupLevel int) string
 	properties() []PropLine
 }
 
@@ -43,13 +43,31 @@ func (f PropFile) duplicatedKeys(p PropertyFile) PropertyFile {
 	sort.Slice(props, keyComparator(props))
 	return PropFile{lines: props}
 }
-func (f PropFile) print() string {
+func (l PropLine) levelKey(groupLevel int) string {
+	values := strings.Split(l.key, ".")
+	values = values[0:groupLevel]
+
+	return strings.Join(values, ".")
+}
+func (f PropFile) print(groupLevel int) string {
 	result := ""
 	result += fmt.Sprintf("###########################\n")
 	result += fmt.Sprintf("Properties:  \n")
 	result += fmt.Sprintf("###########################\n")
-	for index, value := range f.lines {
-		result += fmt.Sprintf("%d %s = %s\n", index, value.key, value.value)
+
+	currentGroup := ""
+	if len(f.lines) > 0 {
+		currentGroup = f.lines[0].levelKey(groupLevel)
+	}
+	for _, value := range f.lines {
+
+		key := value.levelKey(groupLevel)
+		if key != currentGroup {
+			result += "\n"
+			currentGroup = key
+		}
+		println(key)
+		result += fmt.Sprintf("%s = %s\n", value.key, value.value)
 	}
 	result += fmt.Sprintf("###########################\n")
 	return result
@@ -108,8 +126,8 @@ func main() {
 	//filePath2 := "sec.properties"
 	//secondFile := readPropertiesFile(filePath2)
 	// Print the read firstFile
-	print(firstFile.print())
+	print(firstFile.print(2))
 
-	print(firstFile.sortKeys().print())
+	print(firstFile.sortKeys().print(2))
 	//secondFile.print()
 }
