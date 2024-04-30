@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestReadPropertiesFile(t *testing.T) {
+func TestPrintSortedProperties(t *testing.T) {
 
 	file := PropFile{lines: []PropLine{
 		{key: "key1.sk1.ssk1", value: "f_value1"},
