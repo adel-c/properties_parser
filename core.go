@@ -9,8 +9,7 @@ import (
 )
 
 type PropertyFile interface {
-	sortKeys() PropertyFile
-	duplicatedKeys(p PropertyFile) PropertyFile
+	keepOverLoadedKeys(child PropertyFile) PropertyFile
 	print(groupLevel int, displayHeaders bool) string
 	properties() []PropLine
 }
@@ -18,27 +17,19 @@ type PropertyFile interface {
 func (f PropFile) properties() []PropLine {
 	return f.lines
 }
-func (f PropFile) sortKeys() PropertyFile {
 
-	props := make([]PropLine, len(f.lines))
-	copy(props, f.lines)
-
-	sort.Slice(props, keyComparator(props))
-	return PropFile{lines: props}
-}
-func (f PropFile) duplicatedKeys(p PropertyFile) PropertyFile {
+func (f PropFile) keepOverLoadedKeys(child PropertyFile) PropertyFile {
 	v := make(map[string]string)
-	for _, value := range f.lines {
+	props := make([]PropLine, 0)
+	for _, value := range f.properties() {
 		v[value.key] = value.value
 	}
-	for _, sv := range p.sortKeys().properties() {
-		if v[sv.key] == sv.value {
-
+	for _, sv := range child.properties() {
+		if v[sv.key] != sv.value {
+			props = append(props, sv)
 		}
 	}
-	props := make([]PropLine, 0)
-	copy(props, f.lines)
-	sort.Slice(props, keyComparator(props))
+
 	return PropFile{lines: props}
 }
 func (l PropLine) levelKey(groupLevel int) string {
@@ -110,7 +101,7 @@ func ReadPropertiesFile(filePath string) PropFile {
 	if err := scanner.Err(); err != nil {
 		panic(err)
 	}
-
+	sort.Slice(props, keyComparator(props))
 	return PropFile{lines: props}
 }
 func keyComparator(array []PropLine) func(i, j int) bool {

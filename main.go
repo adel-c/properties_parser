@@ -11,17 +11,17 @@ func main() {
 	//secondFile := readPropertiesFile(filePath2)
 	// Print the read firstFile
 
-	sortedFile := firstFile.sortKeys()
+	sortedFile := firstFile
 
 	fmt.Println("###########################")
 	fmt.Println("Properties:  ")
 	fmt.Println("###########################")
-	print(sortedFile.print(2, true))
+	fmt.Println(sortedFile.print(2, true))
 	fmt.Println("###########################")
 	//secondFile.print()
 	fmt.Println("###########################")
 	fmt.Println("Properties:  ")
 	fmt.Println("###########################")
-	print(sortedFile.print(2, false))
+	fmt.Println(sortedFile.print(2, false))
 	fmt.Println("###########################")
 }
